@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Luthfi</title>
+    <style>
+        /* Reset dan Styling Dasar */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: #000;
+            color: #fff;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+            touch-action: manipulation;
+        }
+        
+        /* Page 1 Styles */
+        .page {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        
+        #page1 {
+            z-index: 10;
+        }
+        
+        #page2 {
+            z-index: 5;
+            display: none;
+            background-color: rgba(0, 0, 0, 0.9);
+        }
+        
+        .typing-text {
+            font-size: 10rem;
+            font-weight: bold;
+            margin-bottom: 30px;
+            height: 100px;
+            color: #ff69b4;
+            text-shadow: 0 0 10px #ff69b4, 0 0 20px #ff69b4;
+        }
+        
+        .birthday-name {
+            font-size: 2rem;
+            margin-bottom: 40px;
+            margin-top: 100px;
+            color: #fff;
+        }
+        
+        .btn-next {
+            padding: 12px 30px;
+            background-color: #ff69b4;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-next:hover {
+            background-color: #ff1493;
+            transform: scale(1.05);
+        }
+        
+        /* Page 2 Styles */
+        .gift-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+        
+        .gift-box {
+            width: 200px;
+            height: 200px;
+            background-color: #ff69b4;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            color: white;
+            box-shadow: 0 0 20px rgba(255, 105, 180, 0.7);
+            position: relative;
+            transform: scale(0);
+            animation: giftAppear 1s forwards;
+        }
+        
+        .gift-lid {
+            position: absolute;
+            width: 100%;
+            height: 20%;
+            background-color: #ff1493;
+            top: 0;
+            left: 0;
+            border-radius: 10px 10px 0 0;
+            animation: lidOpen 1s 1s forwards;
+        }
+        
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #f00;
+            opacity: 0;
+            z-index: 1;
+            border-radius: 50%;
+        }
+        
+        .slideshow-container {
+            width: 90%;
+            max-width: 800px;
+            height: 60vh;
+            max-height: 500px;
+            position: relative;
+            margin: 20px auto;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(255, 105, 180, 0.5);
+            opacity: 0;
+            transition: opacity 1s;
+        }
+        
+        .slideshow-container.show {
+            opacity: 1;
+            z-index: 5;
+        }
+        
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            background-size: cover;
+            background-position: center;
+            background-color: rgba(0, 0, 0, 0.7);
+            background-blend-mode: overlay;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .slide.active {
+            opacity: 1;
+        }
+        
+        .slide img {
+            max-width: 100%;
+            max-height: 60%;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 2px solid #ff69b4;
+            box-shadow: 0 0 15px rgba(255, 105, 180, 0.7);
+            object-fit: contain;
+        }
+        
+        .slide-text {
+            font-size: 1.5rem;
+            color: #fff;
+            text-shadow: 0 0 5px #000;
+            max-width: 90%;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+        }
+        
+        .btn-back {
+            padding: 12px 30px;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+            z-index: 10;
+            opacity: 0;
+            transition: opacity 1s 1s;
+        }
+        
+        .slideshow-container.show ~ .btn-back {
+            opacity: 1;
+        }
+        
+        .btn-back:hover {
+            background-color: #555;
+            transform: scale(1.05);
+        }
+        
+        /* Heart Animation */
+        .heart {
+            position: absolute;
+            pointer-events: none;
+            animation: float 4s ease-in-out infinite;
+            opacity: 0;
+            z-index: 10;
+        }
+        
+        /* Animations */
+        @keyframes giftAppear {
+            0% { transform: scale(0); opacity: 0; }
+            80% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        @keyframes lidOpen {
+            0% { transform: rotate(0); }
+            70% { transform: rotate(25deg) translateY(-60%) translateX(15%); }
+            100% { transform: rotate(15deg) translateY(-50%) translateX(10%); }
+        }
+        
+        @keyframes giftDisappear {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(0); opacity: 0; }
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        @keyframes confettiFall {
+            0% { transform: translateY(-100vh) rotate(0deg) scale(0.5); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(360deg) scale(1.5); opacity: 0; }
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .cursor {
+            display: inline-block;
+            width: 3px;
+            height: 40px;
+            background-color: #ff69b4;
+            animation: blink 1s infinite;
+            vertical-align: middle;
+            margin-left: 5px;
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .typing-text {
+                font-size: 5rem;
+                height: 60px;
+            }
+            
+            .birthday-name {
+                font-size: 1.5rem;
+                margin-top: 50px;
+            }
+            
+            .slideshow-container {
+                height: 50vh;
+                width: 95%;
+            }
+            
+            .slide img {
+                max-height: 50%;
+            }
+            
+            .slide-text {
+                font-size: 1.2rem;
+            }
+            
+            .gift-box {
+                width: 150px;
+                height: 150px;
+                font-size: 1.2rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .typing-text {
+                font-size: 3rem;
+                height: 50px;
+            }
+            
+            .birthday-name {
+                font-size: 1.2rem;
+                margin-top: 60px;
+                margin-bottom: 20px;
+            }
+            
+            .btn-next, .btn-back {
+                padding: 10px 20px;
+                font-size: 1rem;
+            }
+            
+            .slideshow-container {
+                height: 45vh;
+            }
+            
+            .slide-text {
+                font-size: 1rem;
+                padding: 8px;
+            }
+            
+            .gift-box {
+                width: 120px;
+                height: 120px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Page 1 -->
+    <div class="page" id="page1">
+        <div class="typing-text" id="typing-text"></div>
+        <div class="birthday-name">Happy Birthday Luthfi!</div>
+        <button class="btn-next" id="btn-next">Open Your Gift</button>
+    </div>
+    
+    <!-- Page 2 -->
+    <div class="page" id="page2">
+        <div class="gift-animation" id="gift-animation">
+            <div class="gift-box" id="gift-box">
+                <div class="gift-lid"></div>
+                For You!
+            </div>
+        </div>
+        
+        <div class="slideshow-container" id="slideshow">
+            <!-- Slide akan dimasukkan melalui JavaScript -->
+        </div>
+        
+        <button class="btn-back" id="btn-back">Back to Message</button>
+    </div>
+
+    <script>
+        // Page 1 Animation
+        const typingText = document.getElementById('typing-text');
+        const btnNext = document.getElementById('btn-next');
+        const page1 = document.getElementById('page1');
+        const page2 = document.getElementById('page2');
+        const giftAnimation = document.getElementById('gift-animation');
+        const giftBox = document.getElementById('gift-box');
+        const slideshow = document.getElementById('slideshow');
+        const btnBack = document.getElementById('btn-back');
+        
+        const textToType = "Happy Birthday";
+        let charIndex = 0;
+        
+        function typeText() {
+            if (charIndex < textToType.length) {
+                typingText.innerHTML = textToType.substring(0, charIndex + 1) + '<span class="cursor"></span>';
+                charIndex++;
+                setTimeout(typeText, 150);
+            } else {
+                typingText.innerHTML = textToType;
+            }
+        }
+        
+        // Mulai animasi ketik saat halaman dimuat
+        window.onload = function() {
+            setTimeout(typeText, 500);
+        };
+        
+        // Pindah ke page 2 saat tombol diklik
+        btnNext.addEventListener('click', function() {
+            page1.style.display = 'none';
+            page2.style.display = 'flex';
+            
+            // Memulai animasi kado
+            startGiftAnimation();
+        });
+        
+        // Page 2 Animations
+        function startGiftAnimation() {
+            // Setelah animasi kado selesai, buat confetti
+            setTimeout(() => {
+                createConfetti();
+                
+                // Setelah confetti, tampilkan slideshow
+                setTimeout(() => {
+                    startSlideshow();
+                    
+                    // Setelah slideshow muncul, hilangkan kado
+                    setTimeout(() => {
+                        giftBox.style.animation = 'giftDisappear 1s forwards';
+                        
+                        // Setelah kado hilang, hapus elemennya
+                        setTimeout(() => {
+                            giftAnimation.style.display = 'none';
+                        }, 1000);
+                    }, 1000);
+                }, 2000);
+            }, 2000);
+        }
+        
+        function createConfetti() {
+            const colors = ['#ff69b4', '#ff1493', '#ff00ff', '#00ffff', '#ffff00', '#00ff00'];
+            const shapes = ['circle', 'square'];
+            
+            for (let i = 0; i < 150; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.width = Math.random() * 10 + 5 + 'px';
+                confetti.style.height = Math.random() * 10 + 5 + 'px';
+                confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                confetti.style.animation = `confettiFall ${Math.random() * 3 + 2}s linear forwards`;
+                confetti.style.animationDelay = Math.random() * 2 + 's';
+                giftAnimation.appendChild(confetti);
+            }
+        }
+        
+        // Slideshow
+        function startSlideshow() {
+            // Data slide (ganti dengan foto dan teks Anda)
+            const slides = [
+                {
+                    image: '533da33fe42f19cfc229d91f309a3975.jpg',
+                    text: 'Arin jelek'
+                },
+                {
+                    image: '4ffbe3052189c6fa892e031f8873add3.jpg',
+                    text: 'Arin jelek bgt'
+                },
+                {
+                    image: '74d2640db4933ae442da2f7625bbcbec.jpg',
+                    text: 'Arin sangat jelek'
+                },
+                {
+                    image: '4ffbe3052189c6fa892e031f8873add3.jpg',
+                    text: 'yoii'
+                }
+            ];
+            
+            // Buat slide
+            slides.forEach((slide, index) => {
+                const slideElement = document.createElement('div');
+                slideElement.className = 'slide';
+                slideElement.style.backgroundImage = `url(${slide.image})`;
+                
+                const imgElement = document.createElement('img');
+                imgElement.src = slide.image;
+                imgElement.alt = `Photo ${index + 1}`;
+                
+                const textElement = document.createElement('div');
+                textElement.className = 'slide-text';
+                textElement.textContent = slide.text;
+                
+                slideElement.appendChild(imgElement);
+                slideElement.appendChild(textElement);
+                slideshow.appendChild(slideElement);
+            });
+            
+            // Aktifkan slide pertama
+            const allSlides = document.querySelectorAll('.slide');
+            allSlides[0].classList.add('active');
+            
+            // Tampilkan slideshow
+            slideshow.classList.add('show');
+            
+            // Mulai animasi hati
+            startHeartAnimation();
+            
+            // Rotasi slideshow
+            let currentSlide = 0;
+            const slideInterval = setInterval(() => {
+                allSlides[currentSlide].classList.remove('active');
+                currentSlide = (currentSlide + 1) % allSlides.length;
+                allSlides[currentSlide].classList.add('active');
+            }, 3000);
+            
+            // Simpan interval untuk dibersihkan nanti
+            slideshow.dataset.interval = slideInterval;
+        }
+        
+        function startHeartAnimation() {
+            const colors = ['#ff69b4', '#ff1493', '#ff0000', '#ff00ff'];
+            
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.innerHTML = '❤️';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+                heart.style.color = colors[Math.floor(Math.random() * colors.length)];
+                heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                document.body.appendChild(heart);
+                
+                // Hapus hati setelah animasi selesai
+                setTimeout(() => {
+                    heart.remove();
+                }, 4000);
+            }, 300);
+        }
+        
+        // Kembali ke page 1
+        btnBack.addEventListener('click', function() {
+            page2.style.display = 'none';
+            page1.style.display = 'flex';
+            
+            // Reset animasi
+            giftAnimation.style.display = 'flex';
+            giftBox.style.animation = '';
+            slideshow.classList.remove('show');
+            
+            // Bersihkan slideshow dan intervalnya
+            clearInterval(slideshow.dataset.interval);
+            slideshow.innerHTML = '';
+            
+            // Hentikan animasi hati dengan menghapus semua elemen hati
+            document.querySelectorAll('.heart').forEach(heart => heart.remove());
+            
+            // Bersihkan confetti
+            document.querySelectorAll('.confetti').forEach(confetti => confetti.remove());
+        });
+    </script>
+</body>
+</html>
